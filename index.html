@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VibeClips AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;background:#090914;color:white;
+  font-family:Arial,sans-serif;padding:25px;
+}
+.container{max-width:850px;margin:auto}
+h1{font-size:35px;color:#a78bfa}
+p{color:#b9b9cc}
+.panel{
+  background:#17172a;border:1px solid #393450;
+  border-radius:18px;padding:24px;margin-top:22px;
+}
+.upload{
+  border:2px dashed #8064dc;border-radius:14px;
+  padding:35px;text-align:center;
+}
+button{
+  background:linear-gradient(90deg,#7748ef,#c04be9);
+  color:white;border:0;padding:14px 22px;
+  border-radius:10px;font-weight:bold;margin-top:15px;
+}
+input{max-width:100%}
+video{width:100%;margin-top:15px;border-radius:12px}
+#status{color:#c4a5ff}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>✦ VibeClips AI</h1>
+<p>Turn long videos into viral short videos.</p>
+
+<div class="panel">
+<h2>Upload your video</h2>
+<div class="upload">
+<p>Select a video from your phone</p>
+<input type="file" id="video" accept="video/*">
+<video id="preview" controls hidden></video>
+</div>
+<button onclick="generate()">Generate AI Clips</button>
+<p id="status">Your creative journey starts here.</p>
+</div>
+
+<div class="panel">
+<h2>AI Clip Studio</h2>
+<p>Smart highlights • Auto captions • 9:16 Shorts</p>
+<p>More editing tools coming soon.</p>
+</div>
+</div>
+
+<script>
+const video=document.getElementById('video');
+const preview=document.getElementById('preview');
+
+video.onchange=()=>{
+ const file=video.files[0];
+ if(!file)return;
+ preview.src=URL.createObjectURL(file);
+ preview.hidden=false;
+ document.getElementById('status').textContent=
+ "Video uploaded successfully!";
+};
+
+function generate(){
+ if(!video.files.length){
+  alert("Please upload a video first!");
+  return;
+ }
+ document.getElementById('status').textContent=
+ "Your video is ready for AI processing. Backend coming soon!";
+}
+</script>
+</body>
+</html>
