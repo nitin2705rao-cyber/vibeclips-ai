@@ -3,108 +3,578 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>VibeClips AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090914">
+
+<title>VibeClips AI - AI Video Clipper</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;padding:22px;background:#090914;color:white;font-family:Arial}
-main{max-width:850px;margin:auto}
-h1{color:#a78bfa;font-size:34px}
-p{color:#bbb9cc;line-height:1.6}
-.card{background:#17172a;border:1px solid #393450;border-radius:18px;padding:22px;margin:22px 0}
-input{width:100%;padding:14px;border-radius:9px;border:1px solid #66538f;background:#0d0d1b;color:white;margin:10px 0}
-button{background:linear-gradient(90deg,#7748ef,#c04be9);color:white;border:0;padding:14px;border-radius:10px;font-weight:bold;margin-top:10px;width:100%}
-video,iframe{width:100%;border:0;border-radius:12px;margin-top:15px}
-iframe{aspect-ratio:16/9}
-.small{font-size:13px;color:#aaa}
-#status{color:#c4a5ff}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: #090914;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    max-width: 850px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    padding: 25px 10px;
+}
+
+.logo {
+    font-size: 34px;
+    font-weight: bold;
+    color: #a78bfa;
+}
+
+.logo span {
+    color: #38bdf8;
+}
+
+header p {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+.card {
+    background: #17172a;
+    border: 1px solid #393950;
+    border-radius: 18px;
+    padding: 22px;
+    margin: 20px 0;
+}
+
+h2 {
+    font-size: 20px;
+    margin-top: 0;
+}
+
+p {
+    color: #bbb;
+    line-height: 1.6;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    background: #090914;
+    border: 1px solid #555;
+    border-radius: 10px;
+    color: white;
+    margin: 10px 0;
+}
+
+input[type="file"] {
+    border: 1px dashed #777;
+    padding: 18px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(90deg,#7748ef,#04b9e9);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+video, iframe {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 15px;
+    background: black;
+}
+
+iframe {
+    aspect-ratio: 16/9;
+    border: none;
+}
+
+#localPreview {
+    max-height: 400px;
+}
+
+.status {
+    padding: 12px;
+    margin-top: 12px;
+    background: #101020;
+    border-radius: 8px;
+    color: #38bdf8;
+    overflow-wrap: anywhere;
+}
+
+.small {
+    font-size: 13px;
+    color: #888;
+}
+
+footer {
+    text-align: center;
+    padding: 30px 10px;
+    color: #777;
+}
+
+@media(max-width:600px) {
+    body {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .logo {
+        font-size: 29px;
+    }
+}
 </style>
 </head>
+
 <body>
+
 <main>
-<h1>✦ VibeClips AI</h1>
-<p>Turn long videos into amazing short videos.</p>
+
+<header>
+    <div class="logo">VibeClips <span>AI</span></div>
+    <p>Turn long videos into amazing short videos.</p>
+</header>
+
+<!-- YOUTUBE PREVIEW -->
 
 <section class="card">
-<h2>🔴 Import YouTube video</h2>
-<p>Paste your YouTube video link below.</p>
-<input id="youtubeURL" placeholder="Paste YouTube URL here">
-<button onclick="previewYouTube()">Preview YouTube Video</button>
+
+<h2>🔴 Import YouTube Video</h2>
+
+<p>Paste a YouTube video link below.</p>
+
+<input
+    id="youtubeURL"
+    type="url"
+    placeholder="Paste YouTube URL here"
+>
+
+<button onclick="previewYouTube()">
+    Preview YouTube Video
+</button>
+
 <div id="youtubePreview"></div>
-<p class="small">YouTube videos play through the official embedded player.</p>
+
+<p class="small">
+YouTube videos play through the official embedded player.
+</p>
+
 </section>
 
-<section class="card">
-<h2>📁 Upload original video</h2>
-<p>Upload a video you own or have permission to edit.</p>
-<input type="file" id="videoFile" accept="video/*">
-<video id="localPreview" controls hidden></video>
-<p id="status">Waiting for video...</p>
-</section>
+<!-- VIDEO UPLOAD -->
 
 <section class="card">
+
+<h2>📁 Upload Original Video</h2>
+
+<p>
+Upload a video that you own or have permission to edit.
+</p>
+
+<input
+    type="file"
+    id="videoFile"
+    accept="video/mp4,video/quicktime,video/webm,video/x-matroska"
+>
+
+<video
+    id="localPreview"
+    controls
+    hidden
+></video>
+
+<button id="uploadButton" onclick="uploadVideo()">
+    Upload Video
+</button>
+
+<div id="status" class="status" aria-live="polite">
+    Waiting for video...
+</div>
+
+<div id="uploadDetails"></div>
+
+</section>
+
+<!-- AI CLIP STUDIO -->
+
+<section class="card">
+
 <h2>✨ AI Clip Studio</h2>
-<p>Automatic highlights • Smart captions • Vertical Shorts</p>
-<button onclick="startProcessing()">Generate AI Clips</button>
-<p id="result">Your AI editing studio is ready.</p>
+
+<p>
+Automatic highlights • Smart captions • Vertical Shorts
+</p>
+
+<button id="processButton" onclick="startProcessing()" disabled>
+    Generate AI Clips
+</button>
+
+<div id="result" class="status" aria-live="polite">
+    Upload a video to get started.
+</div>
+
+<p class="small">
+AI clipping and caption generation will be added
+in a future development stage.
+</p>
+
 </section>
+
+<footer>
+    VibeClips AI © 2026
+    <p>Made for creators.</p>
+</footer>
+
 </main>
 
 <script>
-function getYouTubeID(url){
- try{
-  const u=new URL(url);
-  let id="";
-  if(u.hostname==="youtu.be")
-    id=u.pathname.slice(1);
-  else if(u.pathname==="/watch")
-    id=u.searchParams.get("v");
-  else if(u.pathname.startsWith("/shorts/") ||
-          u.pathname.startsWith("/embed/"))
-    id=u.pathname.split("/")[2];
-  if(!id || !/^[\w-]{11}$/.test(id))return null;
-  return id;
- }catch(e){return null}
+
+// BACKEND CONNECTION
+
+const API_BASE =
+"https://vibeclips-ai-backend.onrender.com";
+
+const MAX_SIZE = 250 * 1024 * 1024;
+
+const ALLOWED_FORMATS = [
+    ".mp4",
+    ".mov",
+    ".webm",
+    ".mkv"
+];
+
+let uploadedVideo = null;
+let previewURL = null;
+let uploading = false;
+
+
+// YOUTUBE VIDEO ID
+
+function getYouTubeID(url) {
+
+    try {
+
+        const u = new URL(url);
+
+        let id = "";
+
+        if (
+            u.hostname === "youtu.be" ||
+            u.hostname === "www.youtu.be"
+        ) {
+            id = u.pathname.slice(1).split("/")[0];
+
+        } else if (
+            u.hostname === "youtube.com" ||
+            u.hostname === "www.youtube.com" ||
+            u.hostname === "m.youtube.com"
+        ) {
+
+            if (u.pathname === "/watch") {
+                id = u.searchParams.get("v") || "";
+
+            } else if (
+                u.pathname.startsWith("/shorts/") ||
+                u.pathname.startsWith("/embed/")
+            ) {
+                id = u.pathname.split("/")[2] || "";
+            }
+
+        } else {
+            return null;
+        }
+
+        return /^[a-zA-Z0-9_-]{11}$/.test(id)
+            ? id
+            : null;
+
+    } catch (error) {
+        return null;
+    }
 }
 
-function previewYouTube(){
- const url=document.getElementById("youtubeURL").value.trim();
- const id=getYouTubeID(url);
- const area=document.getElementById("youtubePreview");
- if(!id){
-  area.innerHTML="<p>Invalid YouTube link. Please check it.</p>";
-  return;
- }
- area.innerHTML="";
- const frame=document.createElement("iframe");
- frame.src="https://www.youtube-nocookie.com/embed/"+id;
- frame.title="YouTube video preview";
- frame.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
- frame.allowFullscreen=true;
- area.appendChild(frame);
+
+// YOUTUBE PREVIEW
+
+function previewYouTube() {
+
+    const url =
+        document.getElementById("youtubeURL").value.trim();
+
+    const id = getYouTubeID(url);
+
+    const area =
+        document.getElementById("youtubePreview");
+
+    if (!id) {
+
+        area.innerHTML =
+            '<p class="status">Invalid YouTube link. Please check it.</p>';
+
+        return;
+    }
+
+    area.innerHTML = "";
+
+    const frame = document.createElement("iframe");
+
+    frame.src =
+        "https://www.youtube-nocookie.com/embed/" + id;
+
+    frame.title = "YouTube video preview";
+
+    frame.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+    frame.allowFullscreen = true;
+
+    area.appendChild(frame);
 }
 
-const fileInput=document.getElementById("videoFile");
-const localPreview=document.getElementById("localPreview");
 
-fileInput.onchange=()=>{
- const file=fileInput.files[0];
- if(!file)return;
- localPreview.src=URL.createObjectURL(file);
- localPreview.hidden=false;
- document.getElementById("status").textContent=
- "Original video uploaded and ready.";
-};
+// LOCAL VIDEO PREVIEW
 
-function startProcessing(){
- if(!fileInput.files.length){
-  document.getElementById("result").textContent=
-  "Please upload your original video file first.";
-  return;
- }
- document.getElementById("result").textContent=
- "Video selected! AI processing server will be connected in the next development stage.";
+const fileInput =
+    document.getElementById("videoFile");
+
+const localPreview =
+    document.getElementById("localPreview");
+
+
+fileInput.addEventListener("change", function() {
+
+    const file = fileInput.files[0];
+
+    uploadedVideo = null;
+
+    document.getElementById("processButton").disabled = true;
+
+    document.getElementById("uploadDetails").textContent = "";
+
+    if (previewURL) {
+        URL.revokeObjectURL(previewURL);
+        previewURL = null;
+    }
+
+    if (!file) {
+        localPreview.hidden = true;
+        return;
+    }
+
+    const extension =
+        "." + file.name.split(".").pop().toLowerCase();
+
+    if (!ALLOWED_FORMATS.includes(extension)) {
+
+        showStatus("Unsupported video format.");
+
+        fileInput.value = "";
+
+        localPreview.hidden = true;
+
+        return;
+    }
+
+    if (file.size > MAX_SIZE) {
+
+        showStatus("Video must be under 250 MB.");
+
+        fileInput.value = "";
+
+        localPreview.hidden = true;
+
+        return;
+    }
+
+    previewURL = URL.createObjectURL(file);
+
+    localPreview.src = previewURL;
+
+    localPreview.hidden = false;
+
+    showStatus("Video selected. Ready to upload.");
+
+});
+
+
+// STATUS MESSAGE
+
+function showStatus(message) {
+
+    document.getElementById("status").textContent = message;
+
 }
+
+
+// UPLOAD VIDEO TO BACKEND
+
+async function uploadVideo() {
+
+    if (uploading) return;
+
+    const file = fileInput.files[0];
+
+    if (!file) {
+
+        showStatus("Please select a video first.");
+
+        return;
+    }
+
+    const extension =
+        "." + file.name.split(".").pop().toLowerCase();
+
+    if (!ALLOWED_FORMATS.includes(extension)) {
+
+        showStatus("Unsupported video format.");
+
+        return;
+    }
+
+    if (file.size > MAX_SIZE) {
+
+        showStatus("Video must be under 250 MB.");
+
+        return;
+    }
+
+    uploading = true;
+
+    uploadedVideo = null;
+
+    const button =
+        document.getElementById("uploadButton");
+
+    const processButton =
+        document.getElementById("processButton");
+
+    button.disabled = true;
+
+    processButton.disabled = true;
+
+    button.textContent = "Uploading...";
+
+    showStatus("Connecting to VibeClips AI server...");
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append("file", file);
+
+        const response = await fetch(
+            API_BASE + "/api/upload",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        let data;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            throw new Error("Invalid server response.");
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail || "Video upload failed."
+            );
+
+        }
+
+        uploadedVideo = data;
+
+        showStatus(
+            "Video successfully uploaded to VibeClips AI!"
+        );
+
+        document.getElementById("uploadDetails").textContent =
+            "File: " + data.filename +
+            " | Size: " +
+            (data.size_bytes / (1024 * 1024)).toFixed(2) +
+            " MB";
+
+        processButton.disabled = false;
+
+        document.getElementById("result").textContent =
+            "Upload complete. Ready for the next stage.";
+
+    } catch (error) {
+
+        showStatus("Upload error: " + error.message);
+
+        uploadedVideo = null;
+
+    } finally {
+
+        uploading = false;
+
+        button.disabled = false;
+
+        button.textContent = "Upload Video";
+
+    }
+
+}
+
+
+// AI PROCESSING PLACEHOLDER
+
+function startProcessing() {
+
+    const result =
+        document.getElementById("result");
+
+    if (uploading) {
+
+        result.textContent =
+            "Please wait for upload to finish.";
+
+        return;
+    }
+
+    if (!uploadedVideo) {
+
+        result.textContent =
+            "Please upload your video first.";
+
+        return;
+    }
+
+    result.textContent =
+        "Your video is uploaded successfully! " +
+        "The AI clipping engine is not implemented yet.";
+
+}
+
 </script>
+
 </body>
 </html>
