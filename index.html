@@ -547,34 +547,66 @@ async function uploadVideo() {
 
 // AI PROCESSING PLACEHOLDER
 
-function startProcessing() {
+async function startProcessing() {
+    const result = document.getElementById("result");
+    const processButton = document.getElementById("processButton");
 
-    const result =
-        document.getElementById("result");
-
-    if (uploading) {
-
-        result.textContent =
-            "Please wait for upload to finish.";
-
+    if (!uploadedVideo || !uploadedVideo.upload_id) {
+        result.textContent = "Please upload your video first.";
         return;
     }
 
-    if (!uploadedVideo) {
+    processButton.disabled = true;
+    result.textContent = "Generating video clips... Please wait.";
+
+    const formData = new FormData();
+    formData.append("upload_id", uploadedVideo.upload_id);
+    formData.append("clip_seconds", "30");
+    formData.append("max_clips", "5");
+
+    try {
+        const response = await fetch(
+            API_BASE + "/api/create-clips",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Clip generation failed");
+        }
 
         result.textContent =
-            "Please upload your video first.";
+            "Successfully generated " +
+            data.clips.length + " clips!";
 
-        return;
+        data.clips.forEach((clip, index) => {
+            const link = document.createElement("a");
+
+            link.href = new URL(
+                clip.download_url,
+                API_BASE
+            ).href;
+
+            link.textContent =
+                "Download Clip " + (index + 1);
+
+            link.download = clip.filename;
+            link.style.display = "block";
+            link.style.marginTop = "12px";
+            link.style.color = "#38bdf8";
+
+            result.appendChild(link);
+        });
+
+    } catch (error) {
+        result.textContent =
+            "Error: " + error.message;
+    } finally {
+        processButton.disabled = false;
     }
-
-    result.textContent =
-        "Your video is uploaded successfully! " +
-        "The AI clipping engine is not implemented yet.";
-
 }
-
-</script>
-
-</body>
-</html>
+    
